@@ -1,4 +1,4 @@
-const tailwind = require('@tailwindcss/postcss')
+const tailwind = require('tailwindcss')
 const autoprefixer = require('autoprefixer')
 
 module.exports = {

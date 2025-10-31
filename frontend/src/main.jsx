@@ -3,8 +3,8 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import App from './App.jsx';
 import './index.css';
-// Fallback for a few Tailwind utilities (temporary)
-import './custom-tailwind-fallback.css';
+// NOTE: temporary fallback disabled while we test Tailwind CLI generation
+// import './custom-tailwind-fallback.css';
 import { BrowserRouter } from 'react-router-dom'; // 1. Importar
 
 ReactDOM.createRoot(document.getElementById('root')).render(
