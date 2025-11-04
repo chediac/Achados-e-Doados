@@ -1,6 +1,7 @@
 package com.mackenzie.achadosdoados.model;
 
 import jakarta.persistence.Column;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -35,6 +36,7 @@ public abstract class Usuario implements Serializable {
     private String email;
 
     @Column(nullable = false, length = 255) // Armazenará a senha criptografada
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String senha;
 
     // --- Construtores ---

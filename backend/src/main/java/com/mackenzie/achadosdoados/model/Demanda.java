@@ -8,6 +8,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 
@@ -61,6 +62,7 @@ public class Demanda implements Serializable {
      */
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "instituicao_id", nullable = false)
+    @JsonIgnoreProperties({"demandas", "senha"})
     private Instituicao instituicao;
 
     /**

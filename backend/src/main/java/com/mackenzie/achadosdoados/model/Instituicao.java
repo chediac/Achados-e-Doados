@@ -17,6 +17,7 @@ import java.util.List;
 @Entity
 @Table(name = "instituicoes")
 @PrimaryKeyJoinColumn(name = "usuario_id") // Chave estrangeira para a tabela 'usuarios'
+@com.fasterxml.jackson.annotation.JsonIgnoreProperties({"hibernateLazyInitializer","handler","demandas"})
 public class Instituicao extends Usuario {
 
     private static final long serialVersionUID = 1L;

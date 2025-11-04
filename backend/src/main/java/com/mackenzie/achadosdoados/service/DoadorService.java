@@ -46,7 +46,7 @@ public class DoadorService {
 
         // Regra de Negócio: O e-mail deve ser único na plataforma 
         if (usuarioRepository.findByEmail(doador.getEmail()).isPresent()) {
-            throw new RuntimeException("Usuário já existente. Já existe conta com o e-mail informado."); [cite: 305]
+            throw new RuntimeException("Usuário já existente. Já existe conta com o e-mail informado.");
         }
 
         // Regra de Negócio: A senha deve ser criptografada (RNF Segurança) 
