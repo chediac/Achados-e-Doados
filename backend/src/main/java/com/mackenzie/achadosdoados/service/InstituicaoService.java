@@ -6,6 +6,8 @@ import com.mackenzie.achadosdoados.repository.UsuarioRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Classe de serviço para gerenciar a lógica de negócio da Instituicao.
@@ -13,6 +15,8 @@ import org.springframework.transaction.annotation.Transactional;
  */
 @Service
 public class InstituicaoService {
+
+    private static final Logger logger = LoggerFactory.getLogger(InstituicaoService.class);
 
     private final InstituicaoRepository instituicaoRepository;
     private final UsuarioRepository usuarioRepository;
@@ -37,6 +41,13 @@ public class InstituicaoService {
      */
     @Transactional
     public Instituicao cadastrarInstituicao(Instituicao instituicao) {
+    // Log incoming object for debugging deserialization issues (senha masked)
+    logger.info("cadastrarInstituicao called with nome='{}', email='{}', senha='{}', endereco='{}', telefone='{}'",
+        instituicao != null ? instituicao.getNome() : null,
+        instituicao != null ? instituicao.getEmail() : null,
+        instituicao != null ? (instituicao.getSenha() != null ? "***" : null) : null,
+        instituicao != null ? instituicao.getEndereco() : null,
+        instituicao != null ? instituicao.getTelefone() : null);
         // Regra de Negócio: Campos obrigatórios não podem ser nulos 
         // Incluindo campos da classe base Usuario e da própria Instituicao
         if (instituicao.getNome() == null || instituicao.getNome().isEmpty() ||

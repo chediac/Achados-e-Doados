@@ -1,8 +1,10 @@
 // src/App.jsx
 import { Routes, Route } from 'react-router-dom';
 import { HomePage } from './pages/HomePage';
+import DemandaDetail from './pages/DemandaDetail';
 import { LoginPage } from './pages/LoginPage';
 import { InstituicaoLoginPage } from './pages/InstituicaoLoginPage';
+import { Instituicoes } from './pages/Instituicoes';
 import { CadastroDoador } from './pages/CadastroDoador';
 import { CadastroInstituicao } from './pages/CadastroInstituicao';
 import { ProfilePage } from './pages/ProfilePage';
@@ -30,8 +32,14 @@ function App() {
       {/* Rota protegida: criar demanda (portal da instituição) */}
   <Route path="/portal/demandas/novo" element={<ProtectedRoute allowedTipo="INSTITUICAO"><CriarDemanda /></ProtectedRoute>} />
 
-      {/* Rota 3: Login da Instituição (URL: "/instituicao/login") */}
-      <Route path="/instituicao/login" element={<InstituicaoLoginPage />} />
+  {/* Rota 3: Área da Instituição (login/register) (URL: "/instituicao") */}
+  <Route path="/instituicao" element={<InstituicaoLoginPage />} />
+
+  {/* Lista pública de instituições */}
+  <Route path="/instituicoes" element={<Instituicoes />} />
+
+  {/* Página de detalhes da demanda (doadores) */}
+  <Route path="/demandas/:id" element={<DemandaDetail />} />
 
       {/* TODO: Adicionar rotas de cadastro, resultados da busca, etc. */}
     </Routes>

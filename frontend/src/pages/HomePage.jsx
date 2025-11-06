@@ -59,12 +59,12 @@ export function HomePage() {
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {demandas.map(d => (
-                <div key={d.id} className="bg-white p-4 rounded shadow">
+                <Link key={d.id} to={`/demandas/${d.id}`} className="block bg-white p-4 rounded shadow hover:shadow-md transition">
                   <h3 className="text-xl font-semibold">{d.titulo}</h3>
                   <div className="text-sm text-gray-500">Categoria: {d.categoria} • Urgência: {d.nivelUrgencia || '—'}</div>
                   <p className="mt-2 text-gray-700">{d.descricao?.length > 200 ? d.descricao.substring(0, 200) + '…' : d.descricao}</p>
                   <div className="mt-3 text-sm text-gray-600">Quantidade: {d.quantidadeDescricao || '—'}</div>
-                </div>
+                </Link>
               ))}
             </div>
           )}

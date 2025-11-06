@@ -1,17 +1,40 @@
 // src/components/Header.jsx
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { getUser, clearToken, clearUser } from '../lib/auth';
 
 export function Header() {
   const navigate = useNavigate();
-  const user = getUser();
+  const [user, setUser] = useState(() => getUser());
+
+  useEffect(() => {
+    // Update when auth changes in the same tab
+    function onAuth() {
+      setUser(getUser());
+    }
+    // Listen to our custom event
+    window.addEventListener('authChanged', onAuth);
+    // Listen to storage events (other tabs)
+    function onStorage(e) {
+      if (e.key && (e.key === 'auth.user' || e.key === 'auth.token')) {
+        setUser(getUser());
+      }
+    }
+    window.addEventListener('storage', onStorage);
+
+    return () => {
+      window.removeEventListener('authChanged', onAuth);
+      window.removeEventListener('storage', onStorage);
+    };
+  }, []);
 
   const handleLogout = () => {
     clearToken();
     clearUser();
+    setUser(null);
     navigate('/login');
   };
+
   return (
     <header className="bg-white shadow-md">
       <nav className="container mx-auto px-6 py-4 flex justify-between items-center">
@@ -24,7 +47,9 @@ export function Header() {
           <Link to="/" className="text-gray-700 hover:text-blue-700">
             Início
           </Link>
-          <span className="text-gray-700 hover:text-blue-700">Instituições</span>
+          <Link to="/instituicoes" className="text-gray-700 hover:text-blue-700">
+            Instituições
+          </Link>
 
           {!user && (
             <>
@@ -33,7 +58,7 @@ export function Header() {
                   Entrar
                 </button>
               </Link>
-              <Link to="/instituicao/login">
+              <Link to="/instituicao">
                 <button className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700">
                   Sou Instituição
                 </button>

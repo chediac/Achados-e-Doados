@@ -1,0 +1,16 @@
+
+> frontend@0.0.0 dev
+> vite --host 0.0.0.0
+
+
+  VITE v7.1.12  ready in 172 ms
+
+  ➜  Local:   http://localhost:5173/
+  ➜  Network: http://10.0.3.124:5173/
+12:07:13 AM [vite] (client) hmr update /src/pages/HomePage.jsx, /src/index.css
+12:07:52 AM [vite] (client) hmr update /src/App.jsx, /src/index.css
+12:35:30 AM [vite] (client) hmr update /src/App.jsx, /src/index.css
+12:35:31 AM [vite] (client) hmr update /src/components/Header.jsx, /src/index.css
+12:35:32 AM [vite] (client) hmr update /src/pages/HomePage.jsx, /src/pages/LoginPage.jsx, /src/pages/InstituicaoLoginPage.jsx, /src/pages/ProfilePage.jsx, /src/components/ProtectedRoute.jsx, /src/pages/CriarDemanda.jsx, /src/components/Header.jsx, /src/pages/DemandaDetail.jsx, /src/index.css
+12:35:34 AM [vite] (client) hmr update /src/pages/HomePage.jsx, /src/index.css
+12:35:38 AM [vite] (client) hmr update /src/pages/DemandaDetail.jsx, /src/index.css

@@ -15,8 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
-import java.util.UUID;
-import java.util.concurrent.ConcurrentHashMap;
+import com.mackenzie.achadosdoados.service.TokenService;
 
 @RestController
 @RequestMapping("/api")
@@ -24,14 +23,13 @@ public class AuthController {
 
     private final UsuarioRepository usuarioRepository;
     private final PasswordEncoder passwordEncoder;
+    private final TokenService tokenService;
 
-    public AuthController(UsuarioRepository usuarioRepository, PasswordEncoder passwordEncoder) {
+    public AuthController(UsuarioRepository usuarioRepository, PasswordEncoder passwordEncoder, TokenService tokenService) {
         this.usuarioRepository = usuarioRepository;
         this.passwordEncoder = passwordEncoder;
+        this.tokenService = tokenService;
     }
-
-    // Mapa simples em memória que associa tokens (UUID) a userId — suficiente para dev
-    private static final ConcurrentHashMap<String, Long> tokenStore = new ConcurrentHashMap<>();
 
     // DTO simples para receber o body
     public static class LoginRequest {
@@ -57,11 +55,8 @@ public class AuthController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Map.of("message", "Credenciais inválidas"));
         }
 
-        // Gera um token simples (UUID) para desenvolvimento.
-        String token = UUID.randomUUID().toString();
-
-        // Armazena mapeamento token -> userId (simples; não persistente)
-        tokenStore.put(token, usuario.getId());
+    // Gera um token simples e o armazena via TokenService.
+    String token = tokenService.generateToken(usuario.getId());
 
     // define tipo (DOADOR / INSTITUICAO) para o frontend
     String tipo = "USUARIO";
@@ -84,7 +79,7 @@ public class AuthController {
     @PostMapping("/logout")
     public ResponseEntity<?> logout(@RequestBody Map<String, String> body) {
         String token = body != null ? body.get("token") : null;
-        if (token != null) tokenStore.remove(token);
+        if (token != null) tokenService.invalidateToken(token);
         return ResponseEntity.noContent().build();
     }
 
@@ -94,8 +89,8 @@ public class AuthController {
         if (auth == null || !auth.startsWith("Bearer ")) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Map.of("message", "Token ausente"));
         }
-        String token = auth.substring("Bearer ".length());
-        Long userId = tokenStore.get(token);
+    String token = auth.substring("Bearer ".length());
+    Long userId = tokenService.getUserIdForToken(token);
         if (userId == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Map.of("message", "Token inválido"));
         }

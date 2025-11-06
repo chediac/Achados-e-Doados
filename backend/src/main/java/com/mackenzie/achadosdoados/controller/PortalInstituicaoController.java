@@ -2,6 +2,10 @@ package com.mackenzie.achadosdoados.controller;
 
 import com.mackenzie.achadosdoados.model.Demanda;
 import com.mackenzie.achadosdoados.service.DemandaService;
+import com.mackenzie.achadosdoados.service.TokenService;
+import com.mackenzie.achadosdoados.repository.UsuarioRepository;
+import com.mackenzie.achadosdoados.model.Usuario;
+import com.mackenzie.achadosdoados.model.Instituicao;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -25,9 +29,13 @@ import java.util.List;
 public class PortalInstituicaoController {
 
     private final DemandaService demandaService;
+    private final TokenService tokenService;
+    private final UsuarioRepository usuarioRepository;
 
-    public PortalInstituicaoController(DemandaService demandaService) {
+    public PortalInstituicaoController(DemandaService demandaService, TokenService tokenService, UsuarioRepository usuarioRepository) {
         this.demandaService = demandaService;
+        this.tokenService = tokenService;
+        this.usuarioRepository = usuarioRepository;
     }
 
     /**
@@ -41,9 +49,25 @@ public class PortalInstituicaoController {
     @PostMapping
     public ResponseEntity<Demanda> criarDemanda(
             @PathVariable Long instituicaoId,
-            @RequestBody Demanda demanda) {
-        // TODO: (Segurança) Validar se o 'instituicaoId' da URL é o mesmo
-        // do usuário autenticado no token.
+            @RequestBody Demanda demanda,
+            @org.springframework.web.bind.annotation.RequestHeader(value = "Authorization", required = false) String authorization) {
+
+        // Segurança básica de desenvolvimento: verifica se o token pertence à instituição
+        if (authorization == null || !authorization.startsWith("Bearer ")) {
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+        }
+        String token = authorization.substring("Bearer ".length());
+        Long userId = tokenService.getUserIdForToken(token);
+        if (userId == null) {
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+        }
+
+        Usuario usuario = usuarioRepository.findById(userId).orElse(null);
+        if (!(usuario instanceof Instituicao) || !usuario.getId().equals(instituicaoId)) {
+            // token não pertence à instituição informada na URL
+            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+        }
+
         Demanda novaDemanda = demandaService.criarDemanda(demanda, instituicaoId);
         return new ResponseEntity<>(novaDemanda, HttpStatus.CREATED);
     }

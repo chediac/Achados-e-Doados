@@ -2,6 +2,11 @@ package com.mackenzie.achadosdoados.controller;
 
 import com.mackenzie.achadosdoados.model.Doacao;
 import com.mackenzie.achadosdoados.service.DoacaoService;
+import com.mackenzie.achadosdoados.service.TokenService;
+import com.mackenzie.achadosdoados.repository.UsuarioRepository;
+import com.mackenzie.achadosdoados.model.Usuario;
+import com.mackenzie.achadosdoados.model.Doador;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -23,9 +28,13 @@ import java.util.List;
 public class DoacaoController {
 
     private final DoacaoService doacaoService;
+    private final TokenService tokenService;
+    private final UsuarioRepository usuarioRepository;
 
-    public DoacaoController(DoacaoService doacaoService) {
+    public DoacaoController(DoacaoService doacaoService, TokenService tokenService, UsuarioRepository usuarioRepository) {
         this.doacaoService = doacaoService;
+        this.tokenService = tokenService;
+        this.usuarioRepository = usuarioRepository;
     }
 
     /**
@@ -38,11 +47,38 @@ public class DoacaoController {
      */
     @PostMapping
     public ResponseEntity<Doacao> registrarIntencaoDeDoacao(
-            @RequestParam Long doadorId,
+            @RequestHeader(value = "Authorization", required = false) String authorization,
+            @RequestParam(required = false) Long doadorId,
             @RequestParam Long demandaId) {
-        // TODO: Na implementação final, o 'doadorId' deve ser obtido
-        // do principal de segurança (usuário autenticado), não de um parâmetro.
-        Doacao novaDoacao = doacaoService.registrarIntencaoDeDoacao(doadorId, demandaId);
+
+        Long resolvedDoadorId = null;
+
+        // Try to resolve from Authorization: Bearer <token>
+        if (authorization != null && authorization.startsWith("Bearer ")) {
+            String token = authorization.substring(7);
+            Long uid = tokenService.getUserIdForToken(token);
+            if (uid != null) {
+                // confirm it's a Doador
+                Usuario u = usuarioRepository.findById(uid).orElse(null);
+                if (u instanceof Doador) {
+                    resolvedDoadorId = uid;
+                }
+            }
+        }
+
+        // fallback to explicit param if provided
+        if (resolvedDoadorId == null && doadorId != null) {
+            Usuario u = usuarioRepository.findById(doadorId).orElse(null);
+            if (u instanceof Doador) {
+                resolvedDoadorId = doadorId;
+            }
+        }
+
+        if (resolvedDoadorId == null) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }
+
+        Doacao novaDoacao = doacaoService.registrarIntencaoDeDoacao(resolvedDoadorId, demandaId);
         return new ResponseEntity<>(novaDoacao, HttpStatus.CREATED);
     }
 
