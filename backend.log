@@ -754,3 +754,102 @@ Hibernate: select d1_0.id,d1_0.categoria,d1_0.descricao,d1_0.instituicao_id,d1_0
 Hibernate: select i1_0.usuario_id,i1_1.email,i1_1.nome,i1_1.senha,i1_0.endereco,i1_0.telefone from instituicoes i1_0 join usuarios i1_1 on i1_0.usuario_id=i1_1.id where i1_0.usuario_id=?
 Hibernate: select d1_0.demanda_id,d1_0.id,d1_0.data,d1_0.doador_id,d1_0.status from doacoes d1_0 where d1_0.demanda_id=?
 2025-11-06T00:32:20.584Z DEBUG 35872 --- [achados-e-doados] [io-8080-exec-11] o.s.web.servlet.DispatcherServlet        : Completed 200 OK
+2025-11-06T01:01:23.097Z DEBUG 35872 --- [achados-e-doados] [io-8080-exec-12] o.s.web.servlet.DispatcherServlet        : POST "/api/cadastro/doador", parameters={}
+2025-11-06T01:01:23.098Z DEBUG 35872 --- [achados-e-doados] [io-8080-exec-12] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped to com.mackenzie.achadosdoados.controller.CadastroController#cadastrarDoador(Doador)
+2025-11-06T01:01:23.098Z DEBUG 35872 --- [achados-e-doados] [io-8080-exec-12] m.m.a.RequestResponseBodyMethodProcessor : Read "application/json;charset=UTF-8" to [com.mackenzie.achadosdoados.model.Doador@1f]
+Hibernate: select u1_0.id,case when u1_1.usuario_id is not null then 1 when u1_2.usuario_id is not null then 2 end,u1_0.email,u1_0.nome,u1_0.senha,u1_2.endereco,u1_2.telefone from usuarios u1_0 left join doadores u1_1 on u1_0.id=u1_1.usuario_id left join instituicoes u1_2 on u1_0.id=u1_2.usuario_id where u1_0.email=?
+Hibernate: insert into usuarios (email,nome,senha,id) values (?,?,?,default)
+Hibernate: insert into doadores (usuario_id) values (?)
+2025-11-06T01:01:23.177Z DEBUG 35872 --- [achados-e-doados] [io-8080-exec-12] o.s.w.s.m.m.a.HttpEntityMethodProcessor  : Using 'application/json', given [*/*] and supported [application/json, application/*+json]
+2025-11-06T01:01:23.177Z DEBUG 35872 --- [achados-e-doados] [io-8080-exec-12] o.s.w.s.m.m.a.HttpEntityMethodProcessor  : Writing [com.mackenzie.achadosdoados.model.Doador@63]
+2025-11-06T01:01:23.178Z DEBUG 35872 --- [achados-e-doados] [io-8080-exec-12] o.s.web.servlet.DispatcherServlet        : Completed 201 CREATED
+2025-11-06T01:01:32.401Z DEBUG 35872 --- [achados-e-doados] [io-8080-exec-14] o.s.web.servlet.DispatcherServlet        : POST "/api/login", parameters={}
+2025-11-06T01:01:32.401Z DEBUG 35872 --- [achados-e-doados] [io-8080-exec-14] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped to com.mackenzie.achadosdoados.controller.AuthController#login(LoginRequest)
+2025-11-06T01:01:32.402Z DEBUG 35872 --- [achados-e-doados] [io-8080-exec-14] m.m.a.RequestResponseBodyMethodProcessor : Read "application/json;charset=UTF-8" to [com.mackenzie.achadosdoados.controller.AuthController$LoginRequest@1a50d380]
+Hibernate: select u1_0.id,case when u1_1.usuario_id is not null then 1 when u1_2.usuario_id is not null then 2 end,u1_0.email,u1_0.nome,u1_0.senha,u1_2.endereco,u1_2.telefone from usuarios u1_0 left join doadores u1_1 on u1_0.id=u1_1.usuario_id left join instituicoes u1_2 on u1_0.id=u1_2.usuario_id where u1_0.email=?
+2025-11-06T01:01:32.476Z DEBUG 35872 --- [achados-e-doados] [io-8080-exec-14] o.s.w.s.m.m.a.HttpEntityMethodProcessor  : Using 'application/json', given [*/*] and supported [application/json, application/*+json]
+2025-11-06T01:01:32.476Z DEBUG 35872 --- [achados-e-doados] [io-8080-exec-14] o.s.w.s.m.m.a.HttpEntityMethodProcessor  : Writing [{user={tipo=DOADOR, nome=Test Donor, id=68, email=donor@test.com}, token=45c9e86d-f613-4abb-9f12-dc0 (truncated)...]
+2025-11-06T01:01:32.477Z DEBUG 35872 --- [achados-e-doados] [io-8080-exec-14] o.s.web.servlet.DispatcherServlet        : Completed 200 OK
+2025-11-06T01:01:41.689Z DEBUG 35872 --- [achados-e-doados] [nio-8080-exec-5] o.s.web.servlet.DispatcherServlet        : POST "/api/doacoes?doadorId=68&demandaId=1", parameters={masked}
+2025-11-06T01:01:41.689Z DEBUG 35872 --- [achados-e-doados] [nio-8080-exec-5] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped to com.mackenzie.achadosdoados.controller.DoacaoController#registrarIntencaoDeDoacao(Long, Long)
+Hibernate: select d1_0.usuario_id,d1_1.email,d1_1.nome,d1_1.senha from doadores d1_0 join usuarios d1_1 on d1_0.usuario_id=d1_1.id where d1_0.usuario_id=?
+Hibernate: select d1_0.id,d1_0.categoria,d1_0.descricao,d1_0.instituicao_id,d1_0.meta_numerica,d1_0.nivel_urgencia,d1_0.prazo_desejado,d1_0.quantidade_descricao,d1_0.status,d1_0.titulo from demandas d1_0 where d1_0.id=?
+2025-11-06T01:01:41.694Z DEBUG 35872 --- [achados-e-doados] [nio-8080-exec-5] o.s.web.servlet.DispatcherServlet        : Failed to complete request: jakarta.servlet.ServletException: Handler processing failed: java.lang.NoClassDefFoundError: ch/qos/logback/classic/spi/ThrowableProxy
+Exception in thread "http-nio-8080-exec-5" java.lang.NoClassDefFoundError: ch/qos/logback/classic/spi/ThrowableProxy
+	at ch.qos.logback.classic.spi.LoggingEvent.<init>(LoggingEvent.java:145)
+	at ch.qos.logback.classic.Logger.buildLoggingEventAndAppend(Logger.java:424)
+	at ch.qos.logback.classic.Logger.filterAndLog_0_Or3Plus(Logger.java:386)
+	at ch.qos.logback.classic.Logger.log(Logger.java:780)
+	at org.slf4j.bridge.SLF4JBridgeHandler.callLocationAwareLogger(SLF4JBridgeHandler.java:232)
+	at org.slf4j.bridge.SLF4JBridgeHandler.publish(SLF4JBridgeHandler.java:313)
+	at java.logging/java.util.logging.Logger.log(Logger.java:980)
+	at java.logging/java.util.logging.Logger.doLog(Logger.java:1007)
+	at java.logging/java.util.logging.Logger.logp(Logger.java:1284)
+	at org.apache.juli.logging.DirectJDKLog.log(DirectJDKLog.java:170)
+	at org.apache.juli.logging.DirectJDKLog.error(DirectJDKLog.java:141)
+	at org.apache.tomcat.util.net.NioEndpoint$SocketProcessor.doRun(NioEndpoint.java:1794)
+	at org.apache.tomcat.util.net.SocketProcessorBase.run(SocketProcessorBase.java:52)
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:975)
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:493)
+	at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:63)
+	at java.base/java.lang.Thread.run(Thread.java:840)
+Caused by: java.lang.ClassNotFoundException: ch.qos.logback.classic.spi.ThrowableProxy
+	... 17 more
+2025-11-06T01:01:59.081Z DEBUG 35872 --- [achados-e-doados] [nio-8080-exec-6] o.s.web.servlet.DispatcherServlet        : POST "/api/doacoes?doadorId=68&demandaId=1", parameters={masked}
+2025-11-06T01:01:59.081Z DEBUG 35872 --- [achados-e-doados] [nio-8080-exec-6] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped to com.mackenzie.achadosdoados.controller.DoacaoController#registrarIntencaoDeDoacao(Long, Long)
+Hibernate: select d1_0.usuario_id,d1_1.email,d1_1.nome,d1_1.senha from doadores d1_0 join usuarios d1_1 on d1_0.usuario_id=d1_1.id where d1_0.usuario_id=?
+Hibernate: select d1_0.id,d1_0.categoria,d1_0.descricao,d1_0.instituicao_id,d1_0.meta_numerica,d1_0.nivel_urgencia,d1_0.prazo_desejado,d1_0.quantidade_descricao,d1_0.status,d1_0.titulo from demandas d1_0 where d1_0.id=?
+2025-11-06T01:01:59.085Z DEBUG 35872 --- [achados-e-doados] [nio-8080-exec-6] o.s.web.servlet.DispatcherServlet        : Failed to complete request: jakarta.servlet.ServletException: Handler processing failed: java.lang.NoClassDefFoundError: ch/qos/logback/classic/spi/ThrowableProxy
+Exception in thread "http-nio-8080-exec-6" java.lang.NoClassDefFoundError: ch/qos/logback/classic/spi/ThrowableProxy
+	at ch.qos.logback.classic.spi.LoggingEvent.<init>(LoggingEvent.java:145)
+	at ch.qos.logback.classic.Logger.buildLoggingEventAndAppend(Logger.java:424)
+	at ch.qos.logback.classic.Logger.filterAndLog_0_Or3Plus(Logger.java:386)
+	at ch.qos.logback.classic.Logger.log(Logger.java:780)
+	at org.slf4j.bridge.SLF4JBridgeHandler.callLocationAwareLogger(SLF4JBridgeHandler.java:232)
+	at org.slf4j.bridge.SLF4JBridgeHandler.publish(SLF4JBridgeHandler.java:313)
+	at java.logging/java.util.logging.Logger.log(Logger.java:980)
+	at java.logging/java.util.logging.Logger.doLog(Logger.java:1007)
+	at java.logging/java.util.logging.Logger.logp(Logger.java:1284)
+	at org.apache.juli.logging.DirectJDKLog.log(DirectJDKLog.java:170)
+	at org.apache.juli.logging.DirectJDKLog.error(DirectJDKLog.java:141)
+	at org.apache.tomcat.util.net.NioEndpoint$SocketProcessor.doRun(NioEndpoint.java:1794)
+	at org.apache.tomcat.util.net.SocketProcessorBase.run(SocketProcessorBase.java:52)
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:975)
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:493)
+	at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:63)
+	at java.base/java.lang.Thread.run(Thread.java:840)
+Caused by: java.lang.ClassNotFoundException: ch.qos.logback.classic.spi.ThrowableProxy
+	... 17 more
+2025-11-06T01:02:10.177Z DEBUG 35872 --- [achados-e-doados] [nio-8080-exec-7] o.s.web.servlet.DispatcherServlet        : POST "/api/doacoes?doadorId=68&demandaId=1", parameters={masked}
+2025-11-06T01:02:10.177Z DEBUG 35872 --- [achados-e-doados] [nio-8080-exec-7] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped to com.mackenzie.achadosdoados.controller.DoacaoController#registrarIntencaoDeDoacao(Long, Long)
+Hibernate: select d1_0.usuario_id,d1_1.email,d1_1.nome,d1_1.senha from doadores d1_0 join usuarios d1_1 on d1_0.usuario_id=d1_1.id where d1_0.usuario_id=?
+Hibernate: select d1_0.id,d1_0.categoria,d1_0.descricao,d1_0.instituicao_id,d1_0.meta_numerica,d1_0.nivel_urgencia,d1_0.prazo_desejado,d1_0.quantidade_descricao,d1_0.status,d1_0.titulo from demandas d1_0 where d1_0.id=?
+2025-11-06T01:02:10.182Z DEBUG 35872 --- [achados-e-doados] [nio-8080-exec-7] o.s.web.servlet.DispatcherServlet        : Failed to complete request: jakarta.servlet.ServletException: Handler processing failed: java.lang.NoClassDefFoundError: ch/qos/logback/classic/spi/ThrowableProxy
+Exception in thread "http-nio-8080-exec-7" java.lang.NoClassDefFoundError: ch/qos/logback/classic/spi/ThrowableProxy
+	at ch.qos.logback.classic.spi.LoggingEvent.<init>(LoggingEvent.java:145)
+	at ch.qos.logback.classic.Logger.buildLoggingEventAndAppend(Logger.java:424)
+	at ch.qos.logback.classic.Logger.filterAndLog_0_Or3Plus(Logger.java:386)
+	at ch.qos.logback.classic.Logger.log(Logger.java:780)
+	at org.slf4j.bridge.SLF4JBridgeHandler.callLocationAwareLogger(SLF4JBridgeHandler.java:232)
+	at org.slf4j.bridge.SLF4JBridgeHandler.publish(SLF4JBridgeHandler.java:313)
+	at java.logging/java.util.logging.Logger.log(Logger.java:980)
+	at java.logging/java.util.logging.Logger.doLog(Logger.java:1007)
+	at java.logging/java.util.logging.Logger.logp(Logger.java:1284)
+	at org.apache.juli.logging.DirectJDKLog.log(DirectJDKLog.java:170)
+	at org.apache.juli.logging.DirectJDKLog.error(DirectJDKLog.java:141)
+	at org.apache.tomcat.util.net.NioEndpoint$SocketProcessor.doRun(NioEndpoint.java:1794)
+	at org.apache.tomcat.util.net.SocketProcessorBase.run(SocketProcessorBase.java:52)
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:975)
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:493)
+	at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:63)
+	at java.base/java.lang.Thread.run(Thread.java:840)
+Caused by: java.lang.ClassNotFoundException: ch.qos.logback.classic.spi.ThrowableProxy
+	... 17 more
+2025-11-06T01:02:20.730Z DEBUG 35872 --- [achados-e-doados] [nio-8080-exec-8] o.s.web.servlet.DispatcherServlet        : GET "/api/demandas", parameters={}
+2025-11-06T01:02:20.730Z DEBUG 35872 --- [achados-e-doados] [nio-8080-exec-8] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped to com.mackenzie.achadosdoados.controller.DemandaController#buscarDemandas(String)
+Hibernate: select d1_0.id,d1_0.categoria,d1_0.descricao,d1_0.instituicao_id,d1_0.meta_numerica,d1_0.nivel_urgencia,d1_0.prazo_desejado,d1_0.quantidade_descricao,d1_0.status,d1_0.titulo from demandas d1_0
+2025-11-06T01:02:20.733Z DEBUG 35872 --- [achados-e-doados] [nio-8080-exec-8] o.s.w.s.m.m.a.HttpEntityMethodProcessor  : Using 'application/json', given [*/*] and supported [application/json, application/*+json]
+2025-11-06T01:02:20.734Z DEBUG 35872 --- [achados-e-doados] [nio-8080-exec-8] o.s.w.s.m.m.a.HttpEntityMethodProcessor  : Writing [[com.mackenzie.achadosdoados.model.Demanda@20]]
+Hibernate: select i1_0.usuario_id,i1_1.email,i1_1.nome,i1_1.senha,i1_0.endereco,i1_0.telefone from instituicoes i1_0 join usuarios i1_1 on i1_0.usuario_id=i1_1.id where i1_0.usuario_id=?
+Hibernate: select d1_0.demanda_id,d1_0.id,d1_0.data,d1_0.doador_id,d1_0.status from doacoes d1_0 where d1_0.demanda_id=?
+2025-11-06T01:02:20.737Z DEBUG 35872 --- [achados-e-doados] [nio-8080-exec-8] o.s.web.servlet.DispatcherServlet        : Completed 200 OK

@@ -1,25 +1,35 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { getUser, apiPost, getToken } from '../lib/auth';
+import { Header } from '../components/Header';
+import { Footer } from '../components/Footer';
+import { DemandaForm } from '../components/DemandaForm';
+import { getUser, getToken } from '../lib/auth';
 
 export function CriarDemanda() {
   const navigate = useNavigate();
   const user = getUser();
-  const [titulo, setTitulo] = useState('');
-  const [categoria, setCategoria] = useState('');
-  const [descricao, setDescricao] = useState('');
-  const [quantidadeDescricao, setQuantidadeDescricao] = useState('');
-  const [nivelUrgencia, setNivelUrgencia] = useState('Média');
-  const [prazoDesejado, setPrazoDesejado] = useState('');
-  const [metaNumerica, setMetaNumerica] = useState('');
   const [error, setError] = useState(null);
   const [saving, setSaving] = useState(false);
+  const [formData, setFormData] = useState({
+    titulo: '',
+    categoria: 'Alimentos',
+    descricao: '',
+    quantidadeDescricao: '',
+    nivelUrgencia: 'Média',
+    prazoDesejado: '',
+    metaNumerica: '',
+    status: 'ABERTA'
+  });
 
   if (!user) {
-    // If not logged, redirect to login
     navigate('/login');
     return null;
   }
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({ ...prev, [name]: value }));
+  };
 
   async function handleSubmit(e) {
     e.preventDefault();
@@ -28,19 +38,14 @@ export function CriarDemanda() {
 
     try {
       const payload = {
-        titulo,
-        categoria,
-        descricao,
-        quantidadeDescricao,
-        nivelUrgencia,
-        prazoDesejado: prazoDesejado || null,
-        metaNumerica: metaNumerica ? Number(metaNumerica) : null,
+        ...formData,
+        prazoDesejado: formData.prazoDesejado || null,
+        metaNumerica: formData.metaNumerica ? Number(formData.metaNumerica) : null,
       };
 
-      // Use the API helper to include token header
       const instituicaoId = user.id;
       const token = getToken();
-      const res = await fetch(`/api/portal/instituicoes/${instituicaoId}/demandas`, {
+      const res = await fetch(`http://localhost:8080/api/portal/instituicoes/${instituicaoId}/demandas`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -50,68 +55,44 @@ export function CriarDemanda() {
       });
 
       if (res.status === 201) {
-        const saved = await res.json();
-        // Redirect to profile or home after create
-        navigate('/perfil');
+        alert('Demanda criada com sucesso!');
+        navigate('/portal/minhas-demandas');
       } else {
         const body = await res.json().catch(() => ({}));
         setError(body.message || `Erro ao criar demanda (status ${res.status})`);
+        setSaving(false);
       }
     } catch (err) {
       console.error(err);
       setError('Erro desconhecido ao criar demanda');
-    } finally {
       setSaving(false);
     }
   }
 
   return (
-    <div className="min-h-screen bg-gray-100 py-8">
-      <div className="container mx-auto px-6">
-        <h1 className="text-2xl font-bold mb-4">Publicar nova demanda</h1>
+    <div className="min-h-screen flex flex-col bg-gray-100">
+      <Header />
+      <main className="flex-grow container mx-auto px-6 py-8">
+        <div className="max-w-2xl mx-auto bg-white p-8 rounded-lg shadow-md">
+          <h1 className="text-2xl font-bold mb-6">Publicar Nova Demanda</h1>
 
-        <form onSubmit={handleSubmit} className="bg-white p-6 rounded shadow max-w-2xl">
-          {error && <div className="mb-4 text-red-600">{error}</div>}
-
-          <label className="block mb-2">Título</label>
-          <input value={titulo} onChange={e => setTitulo(e.target.value)} className="w-full p-2 border rounded mb-4" />
-
-          <label className="block mb-2">Categoria</label>
-          <input value={categoria} onChange={e => setCategoria(e.target.value)} className="w-full p-2 border rounded mb-4" />
-
-          <label className="block mb-2">Descrição</label>
-          <textarea value={descricao} onChange={e => setDescricao(e.target.value)} className="w-full p-2 border rounded mb-4" rows={6} />
-
-          <label className="block mb-2">Quantidade (descrição)</label>
-          <input value={quantidadeDescricao} onChange={e => setQuantidadeDescricao(e.target.value)} className="w-full p-2 border rounded mb-4" />
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
-            <div>
-              <label className="block mb-2">Nível de urgência</label>
-              <select value={nivelUrgencia} onChange={e => setNivelUrgencia(e.target.value)} className="w-full p-2 border rounded">
-                <option>Baixa</option>
-                <option>Média</option>
-                <option>Alta</option>
-              </select>
+          {error && (
+            <div className="mb-4 p-3 bg-red-100 border border-red-400 text-red-700 rounded">
+              {error}
             </div>
+          )}
 
-            <div>
-              <label className="block mb-2">Prazo desejado</label>
-              <input type="date" value={prazoDesejado} onChange={e => setPrazoDesejado(e.target.value)} className="w-full p-2 border rounded" />
-            </div>
-
-            <div>
-              <label className="block mb-2">Meta numérica (opcional)</label>
-              <input type="number" value={metaNumerica} onChange={e => setMetaNumerica(e.target.value)} className="w-full p-2 border rounded" />
-            </div>
-          </div>
-
-          <div className="flex space-x-2">
-            <button disabled={saving} className="px-4 py-2 bg-blue-700 text-white rounded">{saving ? 'Salvando...' : 'Publicar'}</button>
-            <button type="button" onClick={() => navigate(-1)} className="px-4 py-2 bg-gray-200 rounded">Cancelar</button>
-          </div>
-        </form>
-      </div>
+          <DemandaForm
+            formData={formData}
+            onChange={handleChange}
+            onSubmit={handleSubmit}
+            saving={saving}
+            submitLabel="Publicar Demanda"
+            onCancel={() => navigate('/portal/minhas-demandas')}
+          />
+        </div>
+      </main>
+      <Footer />
     </div>
   );
 }

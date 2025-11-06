@@ -42,9 +42,9 @@ export function InstituicaoLoginPage() {
       if (body.token) saveToken(body.token);
       if (body.user) saveUser(body.user);
 
-      // Redireciona para a área do portal da instituição (criar demanda)
+      // Redireciona para a página de perfil após login
       if (body.user && body.user.tipo === 'INSTITUICAO') {
-        navigate('/portal/demandas/novo');
+        navigate('/perfil');
       } else {
         navigate('/');
       }

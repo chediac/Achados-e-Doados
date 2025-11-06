@@ -69,9 +69,14 @@ export function Header() {
           {user && (
             <>
               {user.tipo === 'INSTITUICAO' && (
-                <Link to="/portal/demandas/novo">
-                  <button className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 mr-2">Publicar Demanda</button>
-                </Link>
+                <>
+                  <Link to="/portal/minhas-demandas" className="text-gray-700 hover:text-blue-700">
+                    Minhas Demandas
+                  </Link>
+                  <Link to="/portal/demandas/novo">
+                    <button className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">Publicar Demanda</button>
+                  </Link>
+                </>
               )}
               <Link to="/perfil" className="text-gray-700 hover:text-blue-700">Perfil</Link>
               <button onClick={handleLogout} className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700">Sair</button>

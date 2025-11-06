@@ -41,6 +41,7 @@ public class Doacao implements Serializable {
      */
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "doador_id", nullable = false)
+    @com.fasterxml.jackson.annotation.JsonIgnoreProperties({"doacoes", "senha"})
     private Doador doador;
 
     /**
@@ -49,6 +50,7 @@ public class Doacao implements Serializable {
      */
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "demanda_id", nullable = false)
+    @com.fasterxml.jackson.annotation.JsonIgnoreProperties({"instituicao", "doacoes"})
     private Demanda demanda;
 
     // --- Construtores ---

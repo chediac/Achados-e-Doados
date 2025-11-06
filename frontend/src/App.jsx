@@ -10,6 +10,8 @@ import { CadastroInstituicao } from './pages/CadastroInstituicao';
 import { ProfilePage } from './pages/ProfilePage';
 import ProtectedRoute from './components/ProtectedRoute';
 import CriarDemanda from './pages/CriarDemanda';
+import MinhasDemandas from './pages/MinhasDemandas';
+import EditarDemanda from './pages/EditarDemanda';
 
 function App() {
   return (
@@ -31,6 +33,12 @@ function App() {
 
       {/* Rota protegida: criar demanda (portal da instituição) */}
   <Route path="/portal/demandas/novo" element={<ProtectedRoute allowedTipo="INSTITUICAO"><CriarDemanda /></ProtectedRoute>} />
+
+  {/* Rota protegida: listar minhas demandas (portal da instituição) */}
+  <Route path="/portal/minhas-demandas" element={<ProtectedRoute allowedTipo="INSTITUICAO"><MinhasDemandas /></ProtectedRoute>} />
+
+  {/* Rota protegida: editar demanda (portal da instituição) */}
+  <Route path="/portal/demandas/:demandaId/editar" element={<ProtectedRoute allowedTipo="INSTITUICAO"><EditarDemanda /></ProtectedRoute>} />
 
   {/* Rota 3: Área da Instituição (login/register) (URL: "/instituicao") */}
   <Route path="/instituicao" element={<InstituicaoLoginPage />} />

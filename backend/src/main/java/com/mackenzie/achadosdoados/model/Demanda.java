@@ -70,6 +70,7 @@ public class Demanda implements Serializable {
      * UMA demanda pode gerar VÁRIAS doações.
      */
     @OneToMany(mappedBy = "demanda", fetch = FetchType.LAZY)
+    @com.fasterxml.jackson.annotation.JsonIgnore
     private List<Doacao> doacoes = new ArrayList<>();
 
     // --- Construtores ---

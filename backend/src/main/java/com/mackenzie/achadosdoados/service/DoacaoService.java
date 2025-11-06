@@ -99,4 +99,15 @@ public class DoacaoService {
     public List<Doacao> buscarDoacoesPorInstituicao(Long instituicaoId) {
         return doacaoRepository.findAllByDemandaInstituicaoId(instituicaoId);
     }
+
+    /**
+     * Busca todas as doações (intenções) de uma demanda específica.
+     *
+     * @param demandaId O ID da Demanda.
+     * @return Lista de doações.
+     */
+    @Transactional(readOnly = true)
+    public List<Doacao> buscarDoacoesPorDemanda(Long demandaId) {
+        return doacaoRepository.findAllByDemandaId(demandaId);
+    }
 }

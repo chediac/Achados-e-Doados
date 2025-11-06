@@ -14,3 +14,25 @@
 12:35:32 AM [vite] (client) hmr update /src/pages/HomePage.jsx, /src/pages/LoginPage.jsx, /src/pages/InstituicaoLoginPage.jsx, /src/pages/ProfilePage.jsx, /src/components/ProtectedRoute.jsx, /src/pages/CriarDemanda.jsx, /src/components/Header.jsx, /src/pages/DemandaDetail.jsx, /src/index.css
 12:35:34 AM [vite] (client) hmr update /src/pages/HomePage.jsx, /src/index.css
 12:35:38 AM [vite] (client) hmr update /src/pages/DemandaDetail.jsx, /src/index.css
+1:00:01 AM [vite] (client) hmr update /src/pages/CriarDemanda.jsx, /src/index.css
+1:00:11 AM [vite] (client) hmr update /src/pages/InstituicaoLoginPage.jsx, /src/index.css
+1:00:23 AM [vite] (client) hmr update /src/pages/DemandaDetail.jsx, /src/index.css
+1:00:38 AM [vite] (client) hmr update /src/pages/DemandaDetail.jsx, /src/index.css
+1:02:40 AM [vite] http proxy error: /api/doacoes?doadorId=65&demandaId=1
+Error: socket hang up
+    at Socket.socketOnEnd (node:_http_client:542:25)
+    at Socket.emit (node:events:530:35)
+    at endReadableNT (node:internal/streams/readable:1698:12)
+    at process.processTicksAndRejections (node:internal/process/task_queues:90:21)
+1:02:40 AM [vite] http proxy error: /api/portal/instituicoes/67/demandas
+Error: socket hang up
+    at Socket.socketOnEnd (node:_http_client:542:25)
+    at Socket.emit (node:events:530:35)
+    at endReadableNT (node:internal/streams/readable:1698:12)
+    at process.processTicksAndRejections (node:internal/process/task_queues:90:21)
+1:04:21 AM [vite] (client) hmr update /src/pages/ProfilePage.jsx, /src/index.css
+1:22:36 AM [vite] (client) hmr update /src/App.jsx, /src/index.css
+1:22:47 AM [vite] (client) hmr update /src/App.jsx, /src/index.css
+1:23:05 AM [vite] (client) hmr update /src/components/Header.jsx, /src/index.css
+1:23:41 AM [vite] (client) hmr update /src/pages/ProfilePage.jsx, /src/index.css
+1:37:15 AM [vite] (client) hmr update /src/pages/MinhasDemandas.jsx, /src/index.css

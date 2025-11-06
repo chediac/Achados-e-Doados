@@ -2,6 +2,8 @@ package com.mackenzie.achadosdoados.repository;
 
 import com.mackenzie.achadosdoados.model.Doacao;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -28,7 +30,8 @@ public interface DoacaoRepository extends JpaRepository<Doacao, Long> {
      * @param demandaId O ID da Demanda.
      * @return Uma lista de Doações para aquela demanda.
      */
-    List<Doacao> findAllByDemandaId(Long demandaId);
+    @Query("SELECT d FROM Doacao d JOIN FETCH d.doador WHERE d.demanda.id = :demandaId")
+    List<Doacao> findAllByDemandaId(@Param("demandaId") Long demandaId);
 
     /**
      * Busca todas as doações recebidas por uma Instituição.

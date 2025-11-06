@@ -28,6 +28,7 @@ public class Doador extends Usuario {
      * a lista 'doacoes' seja explicitamente acessada.
      */
     @OneToMany(mappedBy = "doador", fetch = FetchType.LAZY)
+    @com.fasterxml.jackson.annotation.JsonIgnore
     private List<Doacao> doacoes = new ArrayList<>();
 
     // --- Construtores ---

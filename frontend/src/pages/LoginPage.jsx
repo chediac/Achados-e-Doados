@@ -61,78 +61,117 @@ export function LoginPage() {
   };
 
   return (
-    // Layout principal: flex-col para o footer ficar no fim
-    <div className="min-h-screen flex flex-col bg-gray-100">
+    <div className="min-h-screen flex flex-col bg-gradient-to-br from-blue-50 via-white to-purple-50">
       <Header />
       
-      {/* Conteúdo principal: centralizado */}
       <main className="flex-grow flex items-center justify-center py-12 px-4">
-        <div className="max-w-md w-full bg-white p-8 rounded-lg shadow-md">
-          
-          <div className="text-center">
-            {/* Títulos baseados no wireframe */}
-            <h2 className="text-2xl font-bold text-gray-900">
-              Bem-vindo de volta!
-            </h2>
-            <p className="mt-2 text-sm text-gray-600">
-              Entre na sua conta para continuar ajudando
-            </p>
-          </div>
+        <div className="max-w-md w-full">
+          {/* Card Principal */}
+          <div className="bg-white rounded-2xl shadow-2xl overflow-hidden">
+            {/* Header com Gradiente */}
+            <div className="bg-gradient-to-r from-blue-600 to-purple-600 p-8 text-white text-center">
+              <div className="text-5xl mb-4">👋</div>
+              <h2 className="text-3xl font-bold mb-2">
+                Bem-vindo de volta!
+              </h2>
+              <p className="text-blue-100">
+                Entre na sua conta para continuar ajudando
+              </p>
+            </div>
 
-          <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
-            
-            <Input
-              id="email"
-              type="email"
-              label="E-mail"
-              placeholder="matheus@gmail.com"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-            />
-            
-            <Input
-              id="senha"
-              type="password"
-              label="Senha"
-              placeholder="Sua senha"
-              value={senha}
-              onChange={(e) => setSenha(e.target.value)}
-            />
+            {/* Formulário */}
+            <div className="p-8">
+              <form className="space-y-5" onSubmit={handleSubmit}>
+                <Input
+                  id="email"
+                  type="email"
+                  label="E-mail"
+                  placeholder="seu@email.com"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  required
+                />
+                
+                <Input
+                  id="senha"
+                  type="password"
+                  label="Senha"
+                  placeholder="••••••••"
+                  value={senha}
+                  onChange={(e) => setSenha(e.target.value)}
+                  required
+                />
 
-            <div className="flex items-center justify-end">
-              <div className="text-sm">
-                <a href="#" className="font-medium text-blue-600 hover:text-blue-500">
-                  Esqueceu sua senha?
-                </a>
+                <div className="flex items-center justify-end">
+                  <a href="#" className="text-sm font-medium text-blue-600 hover:text-blue-700">
+                    Esqueceu sua senha?
+                  </a>
+                </div>
+
+                {error && (
+                  <div className="bg-red-50 border border-red-200 rounded-lg p-4 flex items-start gap-3" role="alert">
+                    <span className="text-xl">⚠️</span>
+                    <p className="text-sm text-red-800 flex-1">{error}</p>
+                  </div>
+                )}
+
+                <button
+                  type="submit"
+                  disabled={loading}
+                  className="w-full py-4 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-bold rounded-lg shadow-lg hover:shadow-xl transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                >
+                  {loading ? (
+                    <>
+                      <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
+                      Entrando...
+                    </>
+                  ) : (
+                    <>
+                      <span>🔓</span>
+                      Entrar
+                    </>
+                  )}
+                </button>
+              </form>
+
+              {/* Links de Cadastro */}
+              <div className="mt-8 pt-6 border-t border-gray-200">
+                <p className="text-center text-sm text-gray-600 mb-4">
+                  Não tem uma conta?
+                </p>
+                <div className="grid grid-cols-1 gap-3">
+                  <Link 
+                    to="/cadastro/doador" 
+                    className="flex items-center justify-center gap-2 px-4 py-3 bg-blue-50 hover:bg-blue-100 text-blue-700 font-semibold rounded-lg border-2 border-blue-200 hover:border-blue-300 transition-all"
+                  >
+                    <span>❤️</span>
+                    Cadastrar como Doador
+                  </Link>
+                  <Link 
+                    to="/cadastro/instituicao" 
+                    className="flex items-center justify-center gap-2 px-4 py-3 bg-green-50 hover:bg-green-100 text-green-700 font-semibold rounded-lg border-2 border-green-200 hover:border-green-300 transition-all"
+                  >
+                    <span>🏢</span>
+                    Cadastrar como Instituição
+                  </Link>
+                </div>
               </div>
             </div>
+          </div>
 
-            <div>
-              <Button
-                type="submit"
-                disabled={loading}
-                className="bg-yellow-500 text-white font-bold hover:bg-yellow-600 focus:ring-yellow-500"
-              >
-                {loading ? 'Entrando...' : 'Entrar'}
-              </Button>
-            </div>
-          </form>
-          {error && (
-            <div className="mt-4 text-center text-sm text-red-600" role="alert">
-              {error}
-            </div>
-          )}
-          
-          <p className="mt-4 text-center text-sm text-gray-600">
-            Não tem uma conta?{' '}
-            <Link to="/cadastro/doador" className="font-medium text-blue-600 hover:text-blue-500 mr-2">
-              Cadastre-se como Doador
+          {/* Link para Login Institucional */}
+          <div className="mt-6 text-center">
+            <Link 
+              to="/login/instituicao" 
+              className="inline-flex items-center gap-2 text-sm text-gray-600 hover:text-gray-800 font-medium"
+            >
+              <span>🏢</span>
+              Acessar como Instituição
+              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+              </svg>
             </Link>
-            ou{' '}
-            <Link to="/cadastro/instituicao" className="font-medium text-green-600 hover:text-green-500 ml-2">
-              Cadastre-se como Instituição
-            </Link>
-          </p>
+          </div>
         </div>
       </main>
 

@@ -128,4 +128,19 @@ public class DoacaoController {
         List<Doacao> doacoes = doacaoService.buscarDoacoesPorInstituicao(instituicaoId);
         return ResponseEntity.ok(doacoes);
     }
+
+    /**
+     * Busca as doações (intenções) de uma demanda específica.
+     * Usado no painel da instituição para ver quem se interessou por uma demanda.
+     * Responde a: GET /api/doacoes/demanda/1
+     *
+     * @param demandaId O ID da Demanda.
+     * @return Lista de doações e status 200 (OK).
+     */
+    @GetMapping("/demanda/{demandaId}")
+    public ResponseEntity<List<Doacao>> buscarDoacoesPorDemanda(@PathVariable Long demandaId) {
+        // TODO: Adicionar verificação de segurança (só a instituição dona da demanda pode ver).
+        List<Doacao> doacoes = doacaoService.buscarDoacoesPorDemanda(demandaId);
+        return ResponseEntity.ok(doacoes);
+    }
 }

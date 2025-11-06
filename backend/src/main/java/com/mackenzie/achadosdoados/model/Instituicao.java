@@ -28,6 +28,9 @@ public class Instituicao extends Usuario {
     @Column(length = 20)
     private String telefone;
 
+    @Column(length = 500)
+    private String fotoUrl;
+
     /**
      * Mapeia a relação "publica" do diagrama.
      * Uma Instituição pode publicar várias Demandas.
@@ -64,6 +67,14 @@ public class Instituicao extends Usuario {
 
     public void setTelefone(String telefone) {
         this.telefone = telefone;
+    }
+
+    public String getFotoUrl() {
+        return fotoUrl;
+    }
+
+    public void setFotoUrl(String fotoUrl) {
+        this.fotoUrl = fotoUrl;
     }
 
     public List<Demanda> getDemandas() {

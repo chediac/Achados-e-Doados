@@ -102,9 +102,31 @@ public class PortalInstituicaoController {
     public ResponseEntity<Demanda> atualizarDemanda(
             @PathVariable Long instituicaoId,
             @PathVariable Long demandaId,
-            @RequestBody Demanda dadosAtualizados) {
-        // TODO: (Segurança) Validar se a instituição logada
-        // é a "dona" da demanda que está tentando alterar.
+            @RequestBody Demanda dadosAtualizados,
+            @org.springframework.web.bind.annotation.RequestHeader(value = "Authorization", required = false) String authorization) {
+        
+        // Validar autenticação
+        if (authorization == null || !authorization.startsWith("Bearer ")) {
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+        }
+        String token = authorization.substring("Bearer ".length());
+        Long userId = tokenService.getUserIdForToken(token);
+        if (userId == null) {
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+        }
+
+        // Validar que o usuário é instituição
+        Usuario usuario = usuarioRepository.findById(userId).orElse(null);
+        if (!(usuario instanceof Instituicao) || !usuario.getId().equals(instituicaoId)) {
+            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+        }
+
+        // Validar que a demanda pertence à instituição
+        Demanda demandaExistente = demandaService.buscarDemandaPorId(demandaId).orElse(null);
+        if (demandaExistente == null || !demandaExistente.getInstituicao().getId().equals(instituicaoId)) {
+            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+        }
+
         Demanda demanda = demandaService.atualizarDemanda(demandaId, dadosAtualizados);
         return ResponseEntity.ok(demanda);
     }
@@ -120,9 +142,31 @@ public class PortalInstituicaoController {
     @DeleteMapping("/{demandaId}")
     public ResponseEntity<Void> excluirDemanda(
             @PathVariable Long instituicaoId,
-            @PathVariable Long demandaId) {
-        // TODO: (Segurança) Validar se a instituição logada
-        // é a "dona" da demanda que está tentando excluir.
+            @PathVariable Long demandaId,
+            @org.springframework.web.bind.annotation.RequestHeader(value = "Authorization", required = false) String authorization) {
+        
+        // Validar autenticação
+        if (authorization == null || !authorization.startsWith("Bearer ")) {
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+        }
+        String token = authorization.substring("Bearer ".length());
+        Long userId = tokenService.getUserIdForToken(token);
+        if (userId == null) {
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+        }
+
+        // Validar que o usuário é instituição
+        Usuario usuario = usuarioRepository.findById(userId).orElse(null);
+        if (!(usuario instanceof Instituicao) || !usuario.getId().equals(instituicaoId)) {
+            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+        }
+
+        // Validar que a demanda pertence à instituição
+        Demanda demandaExistente = demandaService.buscarDemandaPorId(demandaId).orElse(null);
+        if (demandaExistente == null || !demandaExistente.getInstituicao().getId().equals(instituicaoId)) {
+            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+        }
+
         demandaService.excluirDemanda(demandaId);
         return ResponseEntity.noContent().build(); // 204 No Content
     }

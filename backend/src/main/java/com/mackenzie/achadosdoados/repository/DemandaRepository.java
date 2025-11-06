@@ -2,9 +2,12 @@ package com.mackenzie.achadosdoados.repository;
 
 import com.mackenzie.achadosdoados.model.Demanda;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Repositório para a entidade Demanda.
@@ -39,7 +42,7 @@ public interface DemandaRepository extends JpaRepository<Demanda, Long> {
      */
     List<Demanda> findAllByNivelUrgencia(String nivelUrgencia);
 
-    /**
+        /**
      * Busca demandas onde o título contenha o termo de busca,
      * ignorando maiúsculas/minúsculas.
      * Útil para a barra de busca "O que você gostaria de doar?".
@@ -48,6 +51,24 @@ public interface DemandaRepository extends JpaRepository<Demanda, Long> {
      * @return Uma lista de Demandas correspondentes.
      */
     List<Demanda> findAllByTituloContainingIgnoreCase(String termoBusca);
+
+    /**
+     * Busca uma demanda pelo ID com JOIN FETCH da instituição.
+     * Isso garante que a instituição seja carregada na mesma query.
+     *
+     * @param id O ID da demanda.
+     * @return Optional com a demanda e instituição carregadas.
+     */
+    @Query("SELECT d FROM Demanda d LEFT JOIN FETCH d.instituicao WHERE d.id = :id")
+    Optional<Demanda> findByIdWithInstituicao(@Param("id") Long id);
+
+    /**
+     * Busca todas as demandas com JOIN FETCH da instituição.
+     *
+     * @return Lista de demandas com instituições carregadas.
+     */
+    @Query("SELECT d FROM Demanda d LEFT JOIN FETCH d.instituicao")
+    List<Demanda> findAllWithInstituicao();
 
     // Poderíamos adicionar buscas mais complexas combinando filtros,
     // mas por enquanto, isso pode ser feito na camada de Serviço (Service).

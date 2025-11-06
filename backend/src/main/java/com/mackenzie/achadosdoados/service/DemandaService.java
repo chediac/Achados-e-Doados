@@ -67,8 +67,11 @@ public class DemandaService {
      */
     @Transactional(readOnly = true) // readOnly = true otimiza a transação para leitura
     public List<Demanda> buscarTodasDemandas() {
-        // TODO: Adicionar filtro para buscar apenas status "Ativo"
-        return demandaRepository.findAll();
+        List<Demanda> todasDemandas = demandaRepository.findAllWithInstituicao();
+        // Filtrar demandas inativas (deletadas logicamente)
+        return todasDemandas.stream()
+                .filter(d -> !"Inativo".equals(d.getStatus()))
+                .collect(java.util.stream.Collectors.toList());
     }
     
     /**
@@ -91,7 +94,7 @@ public class DemandaService {
      */
     @Transactional(readOnly = true)
     public Optional<Demanda> buscarDemandaPorId(Long id) {
-        return demandaRepository.findById(id);
+        return demandaRepository.findByIdWithInstituicao(id);
     }
 
     /**
@@ -103,7 +106,11 @@ public class DemandaService {
      */
     @Transactional(readOnly = true)
     public List<Demanda> buscarDemandasPorInstituicao(Long instituicaoId) {
-        return demandaRepository.findAllByInstituicaoId(instituicaoId);
+        List<Demanda> todasDemandas = demandaRepository.findAllByInstituicaoId(instituicaoId);
+        // Filtrar demandas inativas (deletadas logicamente)
+        return todasDemandas.stream()
+                .filter(d -> !"Inativo".equals(d.getStatus()))
+                .collect(java.util.stream.Collectors.toList());
     }
 
     /**
