@@ -38,7 +38,6 @@ export function ProfilePage() {
       return;
     }
 
-    // Validar tamanho (máx 5MB)
     if (file.size > 5 * 1024 * 1024) {
       alert('A imagem deve ter no máximo 5MB');
       return;
@@ -51,9 +50,8 @@ export function ProfilePage() {
       formData.append('foto', file);
 
       const token = localStorage.getItem('auth.token');
-      console.log('Token enviado:', token ? 'Token existe' : 'Token NÃO existe');
       
-      const response = await fetch('http://localhost:8080/api/portal/instituicoes/foto', {
+      const response = await fetch('/api/portal/instituicoes/foto', {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${token}`,
@@ -61,13 +59,10 @@ export function ProfilePage() {
         body: formData,
       });
 
-      console.log('Response status:', response.status);
-
       if (response.ok) {
         const data = await response.json();
         setPhotoPreview(`http://localhost:8080${data.fotoUrl}`);
         
-        // Atualizar dados do usuário no localStorage
         const updatedUser = { ...user, fotoUrl: data.fotoUrl };
         localStorage.setItem('auth.user', JSON.stringify(updatedUser));
         
@@ -78,12 +73,10 @@ export function ProfilePage() {
           const error = await response.json();
           errorMessage = error.error || errorMessage;
         } catch (e) {
-          // Resposta vazia
         }
         alert(errorMessage);
       }
     } catch (error) {
-      console.error('Erro ao fazer upload:', error);
       alert('Erro ao fazer upload da foto');
     } finally {
       setUploadingPhoto(false);

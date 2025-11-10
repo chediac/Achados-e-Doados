@@ -1,0 +1,31 @@
+*.log
+*.pid
+.DS_Store
+node_modules/
+target/
+.idea/
+.vscode/
+*.class
+*.jar
+!.mvn/wrapper/maven-wrapper.jar
+.env
+.env.local
+.env.production
+dist/
+build/
+
+# Docker
+.dockerignore
+docker-compose.override.yml
+
+# AWS
+.elasticbeanstalk/
+.ebextensions/
+*.pem
+.aws/
+
+# Database
+backend/data/
+*.db
+*.mv.db
+*.trace.db

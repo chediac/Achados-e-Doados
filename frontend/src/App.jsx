@@ -12,6 +12,7 @@ import ProtectedRoute from './components/ProtectedRoute';
 import CriarDemanda from './pages/CriarDemanda';
 import MinhasDemandas from './pages/MinhasDemandas';
 import EditarDemanda from './pages/EditarDemanda';
+import MapaInstituicoes from './pages/MapaInstituicoes';
 
 function App() {
   return (
@@ -45,6 +46,9 @@ function App() {
 
   {/* Lista pública de instituições */}
   <Route path="/instituicoes" element={<Instituicoes />} />
+
+  {/* Mapa de instituições */}
+  <Route path="/mapa" element={<MapaInstituicoes />} />
 
   {/* Página de detalhes da demanda (doadores) */}
   <Route path="/demandas/:id" element={<DemandaDetail />} />

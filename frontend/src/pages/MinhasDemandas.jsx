@@ -72,7 +72,7 @@ export default function MinhasDemandas() {
     try {
       const token = getToken();
       const response = await fetch(
-        `http://localhost:8080/api/portal/instituicoes/${user.id}/demandas/${demandaId}`,
+        `/api/portal/instituicoes/${user.id}/demandas/${demandaId}`,
         {
           method: 'DELETE',
           headers: {

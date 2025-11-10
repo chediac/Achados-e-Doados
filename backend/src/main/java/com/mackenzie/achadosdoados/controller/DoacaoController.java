@@ -94,7 +94,6 @@ public class DoacaoController {
     public ResponseEntity<Doacao> atualizarStatusDoacao(
             @PathVariable Long doacaoId,
             @RequestParam String status) {
-        // TODO: Adicionar verificação de segurança para garantir que
         // a instituição logada é a dona desta doação.
         Doacao doacaoAtualizada = doacaoService.atualizarStatusDoacao(doacaoId, status);
         return ResponseEntity.ok(doacaoAtualizada);
@@ -109,7 +108,6 @@ public class DoacaoController {
      */
     @GetMapping("/doador/{doadorId}")
     public ResponseEntity<List<Doacao>> buscarDoacoesPorDoador(@PathVariable Long doadorId) {
-        // TODO: Adicionar verificação de segurança (só o próprio doador pode ver).
         List<Doacao> doacoes = doacaoService.buscarDoacoesPorDoador(doadorId);
         return ResponseEntity.ok(doacoes);
     }
@@ -124,7 +122,6 @@ public class DoacaoController {
      */
     @GetMapping("/instituicao/{instituicaoId}")
     public ResponseEntity<List<Doacao>> buscarDoacoesPorInstituicao(@PathVariable Long instituicaoId) {
-        // TODO: Adicionar verificação de segurança (só a própria instituição pode ver).
         List<Doacao> doacoes = doacaoService.buscarDoacoesPorInstituicao(instituicaoId);
         return ResponseEntity.ok(doacoes);
     }
@@ -139,7 +136,6 @@ public class DoacaoController {
      */
     @GetMapping("/demanda/{demandaId}")
     public ResponseEntity<List<Doacao>> buscarDoacoesPorDemanda(@PathVariable Long demandaId) {
-        // TODO: Adicionar verificação de segurança (só a instituição dona da demanda pode ver).
         List<Doacao> doacoes = doacaoService.buscarDoacoesPorDemanda(demandaId);
         return ResponseEntity.ok(doacoes);
     }

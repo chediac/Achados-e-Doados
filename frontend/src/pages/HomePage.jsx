@@ -1,28 +1,71 @@
 // src/pages/HomePage.jsx
 import React, { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useSearchParams } from 'react-router-dom';
 import { getUser } from '../lib/auth';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 
 export function HomePage() {
+  const [searchParams, setSearchParams] = useSearchParams();
   const [demandas, setDemandas] = useState([]);
+  const [instituicoes, setInstituicoes] = useState([]);
   const [q, setQ] = useState('');
   const [loading, setLoading] = useState(false);
+  const [instituicaoSelecionada, setInstituicaoSelecionada] = useState(null);
 
   useEffect(() => {
-    fetchDemandas();
+    // Buscar instituições para o filtro
+    fetchInstituicoes();
+    
+    // Verificar se há filtro de instituição na URL
+    const instituicaoId = searchParams.get('instituicao');
+    if (instituicaoId) {
+      setInstituicaoSelecionada(instituicaoId);
+      fetchDemandas(null, instituicaoId);
+    } else {
+      fetchDemandas();
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  async function fetchDemandas(titulo) {
+  async function fetchInstituicoes() {
+    try {
+      const res = await fetch('/api/instituicoes');
+      if (res.ok) {
+        const data = await res.json();
+        setInstituicoes(data || []);
+      }
+    } catch (e) {
+      console.error('Erro ao carregar instituições:', e);
+    }
+  }
+
+  async function fetchDemandas(titulo, instituicaoId) {
     setLoading(true);
     try {
-      const url = titulo ? `/api/demandas?titulo=${encodeURIComponent(titulo)}` : '/api/demandas';
-      const res = await fetch(url);
-      if (!res.ok) throw new Error('Erro ao carregar demandas');
-      const data = await res.json();
-      setDemandas(data || []);
+      let url = '/api/demandas';
+      const params = new URLSearchParams();
+      
+      if (titulo) {
+        params.append('titulo', titulo);
+      }
+      
+      if (instituicaoId) {
+        // Filtrar localmente pois a API não tem esse filtro
+        const res = await fetch(url);
+        if (!res.ok) throw new Error('Erro ao carregar demandas');
+        const data = await res.json();
+        const filtered = data.filter(d => d.instituicao?.id === parseInt(instituicaoId));
+        setDemandas(filtered || []);
+      } else {
+        if (params.toString()) {
+          url += '?' + params.toString();
+        }
+        const res = await fetch(url);
+        if (!res.ok) throw new Error('Erro ao carregar demandas');
+        const data = await res.json();
+        setDemandas(data || []);
+      }
     } catch (e) {
       console.error(e);
       setDemandas([]);
@@ -33,7 +76,24 @@ export function HomePage() {
 
   function handleSearch(e) {
     e.preventDefault();
-    fetchDemandas(q);
+    fetchDemandas(q, instituicaoSelecionada);
+  }
+
+  function handleInstituicaoChange(instituicaoId) {
+    setInstituicaoSelecionada(instituicaoId);
+    if (instituicaoId) {
+      setSearchParams({ instituicao: instituicaoId });
+    } else {
+      setSearchParams({});
+    }
+    fetchDemandas(q, instituicaoId);
+  }
+
+  function clearFilters() {
+    setInstituicaoSelecionada(null);
+    setQ('');
+    setSearchParams({});
+    fetchDemandas();
   }
 
   const user = getUser();
@@ -92,16 +152,74 @@ export function HomePage() {
 
       <main className="container mx-auto px-6 py-12 max-w-7xl">
         <section>
-          <div className="flex items-center justify-between mb-8">
+          <div className="flex flex-col lg:flex-row lg:items-center justify-between mb-8 gap-4">
             <div>
               <h2 className="text-3xl font-bold text-gray-800 mb-2">
-                Demandas Recentes
+                {instituicaoSelecionada 
+                  ? `Demandas de ${instituicoes.find(i => i.id === parseInt(instituicaoSelecionada))?.nome || 'Instituição'}`
+                  : 'Demandas Recentes'
+                }
               </h2>
               <p className="text-gray-600">
                 Descubra como você pode fazer a diferença hoje
               </p>
             </div>
+
+            {/* Filtro de Instituição */}
+            <div className="flex items-center gap-3">
+              <div className="relative">
+                <select
+                  value={instituicaoSelecionada || ''}
+                  onChange={(e) => handleInstituicaoChange(e.target.value || null)}
+                  className="appearance-none px-4 py-3 pr-10 bg-white border-2 border-gray-200 rounded-lg focus:outline-none focus:border-blue-500 text-gray-700 font-medium min-w-[250px]"
+                >
+                  <option value="">🏢 Todas as Instituições</option>
+                  {instituicoes.map(inst => (
+                    <option key={inst.id} value={inst.id}>
+                      {inst.nome}
+                    </option>
+                  ))}
+                </select>
+                <div className="absolute inset-y-0 right-0 flex items-center px-3 pointer-events-none">
+                  <svg className="w-5 h-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                  </svg>
+                </div>
+              </div>
+
+              {/* Botão para limpar filtros */}
+              {(instituicaoSelecionada || q) && (
+                <button
+                  onClick={clearFilters}
+                  className="px-4 py-3 bg-gray-200 hover:bg-gray-300 text-gray-700 rounded-lg font-medium flex items-center gap-2 transition-colors"
+                  title="Limpar filtros"
+                >
+                  <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                  Limpar
+                </button>
+              )}
+            </div>
           </div>
+
+          {/* Badge de filtro ativo */}
+          {instituicaoSelecionada && (
+            <div className="mb-6 flex items-center gap-2">
+              <span className="inline-flex items-center gap-2 px-4 py-2 bg-blue-100 text-blue-800 rounded-lg font-medium">
+                <span>🔍</span>
+                Filtrando por: {instituicoes.find(i => i.id === parseInt(instituicaoSelecionada))?.nome}
+                <button
+                  onClick={() => handleInstituicaoChange(null)}
+                  className="ml-2 hover:bg-blue-200 rounded-full p-1"
+                >
+                  <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </button>
+              </span>
+            </div>
+          )}
 
           {loading ? (
             <div className="flex items-center justify-center py-20">

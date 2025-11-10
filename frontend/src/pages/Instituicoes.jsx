@@ -6,6 +6,7 @@ export function Instituicoes() {
   const [lista, setLista] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [searchTerm, setSearchTerm] = useState('');
 
   useEffect(() => {
     async function fetchInstitutions() {
@@ -23,6 +24,11 @@ export function Instituicoes() {
     }
     fetchInstitutions();
   }, []);
+
+  // Filtra as instituições com base no termo de busca
+  const instituicoesFiltradas = lista.filter((inst) =>
+    inst.nome.toLowerCase().includes(searchTerm.toLowerCase())
+  );
 
   return (
     <div className="min-h-screen flex flex-col bg-gradient-to-br from-blue-50 via-white to-purple-50">
@@ -88,17 +94,72 @@ export function Instituicoes() {
           </div>
         ) : (
           <>
+            {/* Barra de Pesquisa */}
+            <div className="mb-8 max-w-2xl mx-auto">
+              <div className="relative">
+                <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                  <span className="text-2xl">🔍</span>
+                </div>
+                <input
+                  type="text"
+                  placeholder="Pesquisar instituições pelo nome..."
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  className="w-full pl-14 pr-4 py-4 text-lg border-2 border-gray-200 rounded-xl focus:border-green-500 focus:ring-2 focus:ring-green-200 transition-all outline-none shadow-sm hover:shadow-md"
+                />
+                {searchTerm && (
+                  <button
+                    onClick={() => setSearchTerm('')}
+                    className="absolute inset-y-0 right-0 pr-4 flex items-center text-gray-400 hover:text-gray-600"
+                    title="Limpar pesquisa"
+                  >
+                    <span className="text-2xl">✖️</span>
+                  </button>
+                )}
+              </div>
+              {searchTerm && (
+                <p className="mt-3 text-center text-gray-600">
+                  {instituicoesFiltradas.length === 0 ? (
+                    <span className="text-red-600">
+                      Nenhuma instituição encontrada com "{searchTerm}"
+                    </span>
+                  ) : (
+                    <span>
+                      {instituicoesFiltradas.length} instituição{instituicoesFiltradas.length !== 1 ? 'ões' : ''} encontrada{instituicoesFiltradas.length !== 1 ? 's' : ''}
+                    </span>
+                  )}
+                </p>
+              )}
+            </div>
+
             <div className="mb-8 text-center">
               <h2 className="text-3xl font-bold text-gray-800 mb-2">
-                Todas as Instituições
+                {searchTerm ? 'Resultados da Pesquisa' : 'Todas as Instituições'}
               </h2>
               <p className="text-gray-600">
                 Encontre uma causa para apoiar
               </p>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {lista.map((inst) => (
+            {instituicoesFiltradas.length === 0 ? (
+              <div className="bg-white rounded-xl shadow-lg p-12 text-center max-w-2xl mx-auto">
+                <div className="text-7xl mb-6">🔍</div>
+                <h2 className="text-2xl font-bold text-gray-800 mb-3">
+                  Nenhuma instituição encontrada
+                </h2>
+                <p className="text-gray-600 mb-4">
+                  Não encontramos instituições que correspondem a "{searchTerm}"
+                </p>
+                <button
+                  onClick={() => setSearchTerm('')}
+                  className="inline-flex items-center gap-2 px-6 py-3 bg-green-600 hover:bg-green-700 text-white font-semibold rounded-lg transition-colors"
+                >
+                  Limpar pesquisa
+                </button>
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {instituicoesFiltradas.map((inst) => (
                 <div 
                   key={inst.id} 
                   className="bg-white rounded-xl shadow-md hover:shadow-2xl transition-all duration-300 overflow-hidden border border-gray-100 hover:border-green-300 transform hover:-translate-y-1 group"
@@ -172,7 +233,7 @@ export function Instituicoes() {
                     {/* Botão de Ação */}
                     <div className="mt-6 pt-4 border-t border-gray-100">
                       <a
-                        href={`/demandas?instituicao=${inst.id}`}
+                        href={`/?instituicao=${inst.id}`}
                         className="inline-flex items-center justify-center gap-2 w-full px-4 py-3 bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white font-semibold rounded-lg shadow-md hover:shadow-lg transition-all"
                       >
                         <span>📋</span>
@@ -186,6 +247,7 @@ export function Instituicoes() {
                 </div>
               ))}
             </div>
+          )}
           </>
         )}
       </main>

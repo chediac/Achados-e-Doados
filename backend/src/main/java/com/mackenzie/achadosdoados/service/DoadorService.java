@@ -18,7 +18,6 @@ public class DoadorService {
     private final UsuarioRepository usuarioRepository;
     private final PasswordEncoder passwordEncoder;
 
-    // Injeção de dependência via construtor (melhor prática)
     public DoadorService(DoadorRepository doadorRepository,
                          UsuarioRepository usuarioRepository,
                          PasswordEncoder passwordEncoder) {
@@ -27,35 +26,21 @@ public class DoadorService {
         this.passwordEncoder = passwordEncoder;
     }
 
-    /**
-     * Cadastra um novo Doador no sistema.
-     * Implementa as Regras de Negócio do UC2.
-     *
-     * @param doador O objeto Doador a ser salvo.
-     * @return O Doador salvo com ID.
-     * @throws RuntimeException se as regras de negócio falharem.
-     */
-    @Transactional // Garante que a operação seja atômica (ou salva tudo ou nada)
+    @Transactional
     public Doador cadastrarDoador(Doador doador) {
-        // Regra de Negócio: Campos obrigatórios não podem ser nulos 
         if (doador.getNome() == null || doador.getNome().isEmpty() ||
             doador.getEmail() == null || doador.getEmail().isEmpty() ||
             doador.getSenha() == null || doador.getSenha().isEmpty()) {
             throw new RuntimeException("Dados inválidos ou ausentes. Campos obrigatórios não podem ser nulos.");
         }
 
-        // Regra de Negócio: O e-mail deve ser único na plataforma 
         if (usuarioRepository.findByEmail(doador.getEmail()).isPresent()) {
             throw new RuntimeException("Usuário já existente. Já existe conta com o e-mail informado.");
         }
 
-        // Regra de Negócio: A senha deve ser criptografada (RNF Segurança) 
         String senhaCriptografada = passwordEncoder.encode(doador.getSenha());
         doador.setSenha(senhaCriptografada);
 
-        // 5. O sistema armazena as informações e cria o novo usuário [cite: 304]
         return doadorRepository.save(doador);
     }
-
-    // TODO: Adicionar métodos para buscar, atualizar e deletar doadores.
 }

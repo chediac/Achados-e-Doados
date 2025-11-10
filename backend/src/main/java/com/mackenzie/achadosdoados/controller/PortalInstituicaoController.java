@@ -83,7 +83,6 @@ public class PortalInstituicaoController {
     @GetMapping
     public ResponseEntity<List<Demanda>> listarDemandasDaInstituicao(
             @PathVariable Long instituicaoId) {
-        // TODO: (Segurança) Validar se o 'instituicaoId' da URL é o mesmo
         // do usuário autenticado no token.
         List<Demanda> demandas = demandaService.buscarDemandasPorInstituicao(instituicaoId);
         return ResponseEntity.ok(demandas);

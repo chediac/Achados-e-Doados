@@ -41,39 +41,28 @@ public class InstituicaoService {
      */
     @Transactional
     public Instituicao cadastrarInstituicao(Instituicao instituicao) {
-    // Log incoming object for debugging deserialization issues (senha masked)
-    logger.info("cadastrarInstituicao called with nome='{}', email='{}', senha='{}', endereco='{}', telefone='{}'",
-        instituicao != null ? instituicao.getNome() : null,
-        instituicao != null ? instituicao.getEmail() : null,
-        instituicao != null ? (instituicao.getSenha() != null ? "***" : null) : null,
-        instituicao != null ? instituicao.getEndereco() : null,
-        instituicao != null ? instituicao.getTelefone() : null);
-        // Regra de Negócio: Campos obrigatórios não podem ser nulos 
-        // Incluindo campos da classe base Usuario e da própria Instituicao
+        logger.info("cadastrarInstituicao called with nome='{}', email='{}', senha='{}', endereco='{}', telefone='{}'",
+            instituicao != null ? instituicao.getNome() : null,
+            instituicao != null ? instituicao.getEmail() : null,
+            instituicao != null ? (instituicao.getSenha() != null ? "***" : null) : null,
+            instituicao != null ? instituicao.getEndereco() : null,
+            instituicao != null ? instituicao.getTelefone() : null);
+
         if (instituicao.getNome() == null || instituicao.getNome().isEmpty() ||
             instituicao.getEmail() == null || instituicao.getEmail().isEmpty() ||
             instituicao.getSenha() == null || instituicao.getSenha().isEmpty() ||
             instituicao.getEndereco() == null || instituicao.getEndereco().isEmpty() ||
             instituicao.getTelefone() == null || instituicao.getTelefone().isEmpty()) {
-            // Corresponde ao Fluxo Alternativo A1 - Dados inválidos ou incompletos 
             throw new RuntimeException("Dados inválidos ou ausentes. Campos obrigatórios não podem ser nulos.");
         }
 
-        // Regra de Negócio: O e-mail deve ser único
-        // (Adaptado da regra "CNPJ deve ser válido e único",
-        // pois em nosso modelo o e-mail é o identificador único de login)
         if (usuarioRepository.findByEmail(instituicao.getEmail()).isPresent()) {
-            // Corresponde ao Fluxo Alternativo A2 - Instituição já cadastrada 
             throw new RuntimeException("Instituição já cadastrada. Já existe conta com o e-mail informado.");
         }
 
-        // RNF Segurança: A senha deve ser criptografada
         String senhaCriptografada = passwordEncoder.encode(instituicao.getSenha());
         instituicao.setSenha(senhaCriptografada);
 
-        // 5. O sistema armazena as informações da instituição 
         return instituicaoRepository.save(instituicao);
     }
-
-    // TODO: Adicionar métodos para buscar, atualizar e deletar instituições.
 }

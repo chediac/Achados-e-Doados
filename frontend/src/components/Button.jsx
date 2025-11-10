@@ -1,4 +1,3 @@
-// src/components/Button.jsx
 import React from 'react';
 
 export function Button({ children, onClick, type = 'button', className = '', disabled = false }) {

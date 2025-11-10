@@ -45,7 +45,7 @@ export function CriarDemanda() {
 
       const instituicaoId = user.id;
       const token = getToken();
-      const res = await fetch(`http://localhost:8080/api/portal/instituicoes/${instituicaoId}/demandas`, {
+      const res = await fetch(`/api/portal/instituicoes/${instituicaoId}/demandas`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

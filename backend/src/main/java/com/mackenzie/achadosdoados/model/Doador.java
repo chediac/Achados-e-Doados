@@ -1,10 +1,10 @@
 package com.mackenzie.achadosdoados.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.PrimaryKeyJoinColumn;
-import jakarta.persistence.Table;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.OneToMany;
+import javax.persistence.PrimaryKeyJoinColumn;
+import javax.persistence.Table;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,6 +19,22 @@ import java.util.List;
 public class Doador extends Usuario {
 
     private static final long serialVersionUID = 1L;
+
+    // Campos de localização para mapa
+    @javax.persistence.Column(length = 10)
+    private String cep;
+
+    @javax.persistence.Column(length = 100)
+    private String cidade;
+
+    @javax.persistence.Column(length = 2)
+    private String estado;
+
+    @javax.persistence.Column
+    private Double latitude;
+
+    @javax.persistence.Column
+    private Double longitude;
 
     /**
      * Mapeia a relação "realiza" do diagrama[cite: 349].
@@ -42,6 +58,46 @@ public class Doador extends Usuario {
     }
 
     // --- Getters e Setters ---
+
+    public String getCep() {
+        return cep;
+    }
+
+    public void setCep(String cep) {
+        this.cep = cep;
+    }
+
+    public String getCidade() {
+        return cidade;
+    }
+
+    public void setCidade(String cidade) {
+        this.cidade = cidade;
+    }
+
+    public String getEstado() {
+        return estado;
+    }
+
+    public void setEstado(String estado) {
+        this.estado = estado;
+    }
+
+    public Double getLatitude() {
+        return latitude;
+    }
+
+    public void setLatitude(Double latitude) {
+        this.latitude = latitude;
+    }
+
+    public Double getLongitude() {
+        return longitude;
+    }
+
+    public void setLongitude(Double longitude) {
+        this.longitude = longitude;
+    }
 
     public List<Doacao> getDoacoes() {
         return doacoes;

@@ -10,6 +10,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.ExceptionHandler;
+
+import java.util.Map;
 
 /**
  * Controller focado nos endpoints públicos de cadastro
@@ -36,10 +39,16 @@ public class CadastroController {
      * @return O doador criado com status 201 (Created).
      */
     @PostMapping("/doador")
-    public ResponseEntity<Doador> cadastrarDoador(@RequestBody Doador doador) {
-        Doador novoDoador = doadorService.cadastrarDoador(doador);
-        // Retorna 201 Created com o objeto salvo no corpo da resposta
-        return new ResponseEntity<>(novoDoador, HttpStatus.CREATED);
+    public ResponseEntity<?> cadastrarDoador(@RequestBody Doador doador) {
+        try {
+            Doador novoDoador = doadorService.cadastrarDoador(doador);
+            // Remove a senha da resposta por segurança
+            novoDoador.setSenha(null);
+            return new ResponseEntity<>(novoDoador, HttpStatus.CREATED);
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(Map.of("message", e.getMessage()));
+        }
     }
 
     /**
@@ -50,12 +59,24 @@ public class CadastroController {
      * @return A instituição criada com status 201 (Created).
      */
     @PostMapping("/instituicao")
-    public ResponseEntity<Instituicao> cadastrarInstituicao(@RequestBody Instituicao instituicao) {
-        Instituicao novaInstituicao = instituicaoService.cadastrarInstituicao(instituicao);
-        // Retorna 201 Created com o objeto salvo no corpo da resposta
-        return new ResponseEntity<>(novaInstituicao, HttpStatus.CREATED);
+    public ResponseEntity<?> cadastrarInstituicao(@RequestBody Instituicao instituicao) {
+        try {
+            Instituicao novaInstituicao = instituicaoService.cadastrarInstituicao(instituicao);
+            // Remove a senha da resposta por segurança
+            novaInstituicao.setSenha(null);
+            return new ResponseEntity<>(novaInstituicao, HttpStatus.CREATED);
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(Map.of("message", e.getMessage()));
+        }
     }
 
-    // TODO: Adicionar tratamento de exceções (ex: @ExceptionHandler)
-    // para retornar 400 Bad Request em caso de e-mail duplicado, em vez de 500.
+    /**
+     * Tratamento global de exceções para este controller
+     */
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<?> handleException(Exception e) {
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+            .body(Map.of("message", "Erro interno do servidor: " + e.getMessage()));
+    }
 }

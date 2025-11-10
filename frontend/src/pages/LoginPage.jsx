@@ -1,4 +1,3 @@
-// src/pages/LoginPage.jsx
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Header } from '../components/Header';
@@ -23,8 +22,6 @@ export function LoginPage() {
     }
     setLoading(true);
     try {
-      console.log('Login submit', { email });
-      // Tenta rota de login padrão
       const res = await fetch('/api/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -39,13 +36,11 @@ export function LoginPage() {
         if (body.user) {
           saveUser(body.user);
         }
-        // redireciona para home
         navigate('/');
         return;
       }
 
       if (res.status === 404) {
-        // servidor possivelmente não implementou /api/login
         setError('Endpoint de autenticação não disponível no backend (404).');
       } else if (res.status === 401) {
         setError('Credenciais inválidas');

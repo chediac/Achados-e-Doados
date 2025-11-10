@@ -70,7 +70,6 @@ public class DoacaoService {
         Doacao doacao = doacaoRepository.findById(doacaoId)
                 .orElseThrow(() -> new RuntimeException("Doação não encontrada."));
 
-        // TODO: Adicionar lógica de segurança para verificar se a instituição
         // logada é a "dona" desta doação (via demanda).
 
         doacao.setStatus(novoStatus);

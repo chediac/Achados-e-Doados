@@ -1,4 +1,3 @@
-// src/components/Input.jsx
 import React from 'react';
 
 export function Input({ id, name, type = 'text', placeholder, value, onChange, label, required, disabled, ...props }) {

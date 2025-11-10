@@ -50,6 +50,9 @@ export function Header() {
           <Link to="/instituicoes" className="text-gray-700 hover:text-blue-700">
             Instituições
           </Link>
+          <Link to="/mapa" className="text-gray-700 hover:text-blue-700">
+            Mapa
+          </Link>
 
           {!user && (
             <>
