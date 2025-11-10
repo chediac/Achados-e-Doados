@@ -1,5 +1,6 @@
 package com.mackenzie.achadosdoados.config;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -13,6 +14,10 @@ import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * Configuração central de segurança para a aplicação Spring Boot.
@@ -20,6 +25,9 @@ import java.util.Arrays;
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
+
+    @Value("${cors.allowed.origins:}")
+    private String corsAllowedOrigins;
 
     /**
      * Define um Bean para o PasswordEncoder, que será usado para
@@ -36,14 +44,18 @@ public class SecurityConfig {
      */
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
-        CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(Arrays.asList(
-            "http://localhost:5173", 
+        List<String> defaultOrigins = Arrays.asList(
+            "http://localhost:5173",
             "https://localhost:5173",
             "http://127.0.0.1:5173",
             "https://127.0.0.1:5173",
             "http://localhost:3000"
-        ));
+        );
+
+        List<String> allowedOrigins = parseAllowedOrigins(corsAllowedOrigins);
+
+        CorsConfiguration configuration = new CorsConfiguration();
+        configuration.setAllowedOrigins(allowedOrigins.isEmpty() ? defaultOrigins : allowedOrigins);
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(Arrays.asList("*"));
         configuration.setAllowCredentials(true);
@@ -52,6 +64,17 @@ public class SecurityConfig {
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
         return source;
+    }
+
+    private List<String> parseAllowedOrigins(String originsProperty) {
+        if (originsProperty == null || originsProperty.isBlank()) {
+            return Collections.emptyList();
+        }
+
+        return Stream.of(originsProperty.split(","))
+            .map(String::trim)
+            .filter(origin -> !origin.isEmpty())
+            .collect(Collectors.toList());
     }
 
     /**
