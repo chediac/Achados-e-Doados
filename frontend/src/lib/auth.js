@@ -4,7 +4,7 @@
 export function saveToken(token) {
   try {
     localStorage.setItem('auth.token', token);
-    try { window.dispatchEvent(new Event('authChanged')); } catch (e) { /* ignore */ }
+    try { window.dispatchEvent(new Event('authChanged')); } catch { /* ignore */ }
   } catch (e) {
     console.warn('Não foi possível salvar token:', e);
   }
@@ -13,7 +13,7 @@ export function saveToken(token) {
 export function getToken() {
   try {
     return localStorage.getItem('auth.token');
-  } catch (e) {
+  } catch {
     return null;
   }
 }
@@ -21,14 +21,14 @@ export function getToken() {
 export function clearToken() {
   try {
     localStorage.removeItem('auth.token');
-    try { window.dispatchEvent(new Event('authChanged')); } catch (e) { /* ignore */ }
-  } catch (e) {}
+    try { window.dispatchEvent(new Event('authChanged')); } catch { /* ignore */ }
+  } catch {}
 }
 
 export function saveUser(user) {
   try {
     localStorage.setItem('auth.user', JSON.stringify(user));
-    try { window.dispatchEvent(new Event('authChanged')); } catch (e) { /* ignore */ }
+    try { window.dispatchEvent(new Event('authChanged')); } catch { /* ignore */ }
   } catch (e) {
     console.warn('Não foi possível salvar usuário:', e);
   }
@@ -38,14 +38,14 @@ export function getUser() {
   try {
     const raw = localStorage.getItem('auth.user');
     return raw ? JSON.parse(raw) : null;
-  } catch (e) {
+  } catch {
     return null;
   }
 }
 
 export function clearUser() {
-  try { localStorage.removeItem('auth.user'); } catch (e) {}
-  try { window.dispatchEvent(new Event('authChanged')); } catch (e) { /* ignore */ }
+  try { localStorage.removeItem('auth.user'); } catch {}
+  try { window.dispatchEvent(new Event('authChanged')); } catch { /* ignore */ }
 }
 
 export async function apiPost(path, body) {
