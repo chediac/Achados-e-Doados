@@ -51,7 +51,7 @@ export function EditarDemanda() {
           alert('Erro ao carregar demanda');
           navigate('/portal/minhas-demandas');
         }
-      } catch (error) {
+      } catch {
         alert('Erro ao carregar demanda');
         navigate('/portal/minhas-demandas');
       } finally {
@@ -92,7 +92,8 @@ export function EditarDemanda() {
         try {
           const error = await response.text();
           errorMessage = error || errorMessage;
-        } catch (e) {
+        } catch {
+          // ignore
         }
         alert('Erro ao atualizar demanda: ' + errorMessage);
         setSaving(false);

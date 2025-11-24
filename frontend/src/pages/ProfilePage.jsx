@@ -72,7 +72,8 @@ export function ProfilePage() {
         try {
           const error = await response.json();
           errorMessage = error.error || errorMessage;
-        } catch (e) {
+        } catch {
+          // ignore
         }
         alert(errorMessage);
       }

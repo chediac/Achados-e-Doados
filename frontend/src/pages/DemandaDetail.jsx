@@ -65,13 +65,13 @@ export default function DemandaDetail() {
         try {
           const errorData = await res.json();
           errorMsg = errorData.message || errorMsg;
-        } catch (e) {
+        } catch {
           const text = await res.text();
           errorMsg = text || errorMsg;
         }
         throw new Error(errorMsg);
       }
-      const created = await res.json();
+      await res.json();
       setMessage('Intenção registrada com sucesso. A instituição será notificada.');
     } catch (e) {
       console.error(e);
@@ -117,7 +117,6 @@ export default function DemandaDetail() {
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50">
       <Header />
       <main className="container mx-auto px-6 py-8 max-w-5xl">
-        {/* Breadcrumb */}
         <div className="mb-6">
           <Link to="/" className="text-blue-600 hover:text-blue-700 text-sm flex items-center gap-2">
             <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
