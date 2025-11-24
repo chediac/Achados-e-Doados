@@ -60,7 +60,7 @@ export function EditarDemanda() {
     };
 
     fetchDemanda();
-  }, [demandaId]);
+  }, [demandaId, navigate, user?.id]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;

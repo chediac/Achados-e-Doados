@@ -12,7 +12,6 @@ export default function DemandaDetail() {
   const [showContact, setShowContact] = useState(false);
   const [doingDonate, setDoingDonate] = useState(false);
   const [message, setMessage] = useState(null);
-  const navigate = useNavigate();
 
   useEffect(() => {
     async function load() {

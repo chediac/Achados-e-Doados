@@ -77,7 +77,7 @@ export function ProfilePage() {
         }
         alert(errorMessage);
       }
-    } catch (error) {
+    } catch {
       alert('Erro ao fazer upload da foto');
     } finally {
       setUploadingPhoto(false);

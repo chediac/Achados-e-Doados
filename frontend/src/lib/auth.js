@@ -22,7 +22,7 @@ export function clearToken() {
   try {
     localStorage.removeItem('auth.token');
     try { window.dispatchEvent(new Event('authChanged')); } catch { /* ignore */ }
-  } catch {}
+  } catch { /* ignore */ }
 }
 
 export function saveUser(user) {
@@ -44,7 +44,7 @@ export function getUser() {
 }
 
 export function clearUser() {
-  try { localStorage.removeItem('auth.user'); } catch {}
+  try { localStorage.removeItem('auth.user'); } catch { /* ignore */ }
   try { window.dispatchEvent(new Event('authChanged')); } catch { /* ignore */ }
 }
 

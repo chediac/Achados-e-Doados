@@ -1,7 +1,6 @@
 // src/pages/HomePage.jsx
 import React, { useEffect, useState } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
-import { getUser } from '../lib/auth';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 
